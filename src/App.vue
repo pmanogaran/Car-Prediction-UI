@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="background-color: #FAFAFA">
     <img id="car_img" alt="Vue logo" src="./assets/car.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
@@ -28,7 +28,7 @@ export default {
 
   #car_img {
     height: 100px;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 20px;
   }
 </style>

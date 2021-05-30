@@ -1,20 +1,20 @@
 <template>
   <div class="hello">
-    <h1>Car Price Prediction</h1>
     <div>
-      <form novalidate class="md-layout">
-        <md-card class="md-layout-item md-size-50 md-small-size-100" style="margin: 0 auto">
+      <form novalidate class="md-layout" >
+        <md-card class="md-layout-item md-size-50 md-small-size-100" style="margin: 0 auto; padding: 40px; max-width: 500px; min-width: 500px">
+          <h1>Car Price Prediction</h1>
           <md-card-content>
             <div class="md-layout md-gutter">
               <div class="md-layout-item md-small-size-100">
                 <md-field>
                   <label for="marke">Marke</label>
                   <md-select name="marke" id="marke" v-model="form.marke" md-dense :disabled="sending">
-                    <md-option value="Audi">Audi</md-option>
+                    <md-option value="AUDI">Audi</md-option>
                     <md-option value="BMW">BMW</md-option>
                     <md-option value="VW">VW</md-option>
-                    <md-option value="Mercedes-Benz">Mercedes-Benz</md-option>
-                    <md-option value="Volvo">Volvo</md-option>
+                    <md-option value="MERCEDES-BENZ">Mercedes-Benz</md-option>
+                    <md-option value="VOLVO">Volvo</md-option>
                   </md-select>
                 </md-field>
               </div>
@@ -88,13 +88,16 @@
 
           <md-progress-bar md-mode="indeterminate" v-if="sending"/>
 
-          <md-card-actions>
-            <md-button type="submit" class="md-primary" :disabled="sending">Analyze</md-button>
+          <md-card-actions style="justify-content: center">
+            <md-button style="width: 100%; min-height: 50px" v-on:click="getPrediction()" class="md-raised md-accent" :disabled="sending">Analyze</md-button>
           </md-card-actions>
         </md-card>
-
       </form>
     </div>
+    <div v-if="this.processFinished" style="margin-top: 40px">
+      <span style="font-size: 20px">Estimated price</span>
+      <h1 style="font-weight: bolder">{{estimatedPrice  | currency}}</h1>
+  </div>
   </div>
 </template>
 
@@ -115,29 +118,30 @@
           treibstoff: null,
           getriebe: null,
         },
-        userSaved: false,
         sending: false,
-        lastUser: null
+        estimatedPrice: 0,
+
+        processFinished: false
       }
     },
     methods: {
-      clearForm() {
-        this.form.firstName = null
-        this.form.lastName = null
-        this.form.age = null
-        this.form.gender = null
-        this.form.email = null
-      },
-      saveUser() {
-        this.sending = true
-
+      getPrediction() {
+        this.sending = true;
+        this.processFinished = false;
         // Instead of this timeout, here you can call your API
-        this.$http.post("http://DESKTOP-S0MEHG8:8080/api/rest/process/car_test_1_score?" ,{
-          this.lastUser = `${this.form.firstName} ${this.form.lastName}`
-          this.userSaved = true
-          this.sending = false
-          this.clearForm()
-        }, 1500)
+        this.$http.get("/api/rest/process/carpriceprediction_score?" +
+          "datum=" + this.form.datum +
+          "&pferdestaerke=" + this.form.pferdestaerke +
+          "&getriebe=" + this.form.getriebe +
+          "&treibstoff=" + this.form.treibstoff +
+          "&marke=" + this.form.marke +
+          "&kilometer=" + this.form.kilometer +
+          "&modell=" + this.form.modell).then((res) => {
+            console.log(res);
+            this.sending = false;
+            this.estimatedPrice = res.data['prediction(preis)'];
+            this.processFinished = true;
+        });
       },
     }
   }

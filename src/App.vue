@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    <img id="car_img" alt="Vue logo" src="./assets/car.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
@@ -25,4 +25,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+  #car_img {
+    height: 100px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
 </style>
